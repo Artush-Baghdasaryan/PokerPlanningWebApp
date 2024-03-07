@@ -1,0 +1,15 @@
+<div class="container">
+    <div class="content">
+        <h1 class="heading">
+            Poker Planning For Agile Development Teams
+        </h1>
+        <p class="text">Work productively with out simple and convenient tool.</p>
+        <form class="name-wizard" [formGroup]="nameForm" (ngSubmit)="onSubmit()">
+            <mat-form-field>
+                <mat-label>Game Name</mat-label>
+                <input matInput type="text" formControlName="name">
+            </mat-form-field>
+            <button class="button" type="submit" mat-flat-button [disabled]="nameForm.invalid">Create Game</button>
+        </form>
+    </div>
+</div>

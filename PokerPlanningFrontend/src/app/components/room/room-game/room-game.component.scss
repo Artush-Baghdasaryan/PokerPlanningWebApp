@@ -1,0 +1,88 @@
+@import "../../../../scss/variables/colors";
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+
+    .game-table {
+        width: 700px;
+        height: 270px;
+        border-radius: 200px;
+        padding: 20px;
+        background: radial-gradient(70% 65%, white 50%, var(--main-blue));
+        position: relative;
+        display: flex;
+        justify-content: center;
+
+        &__content {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 200px;
+            background-color: var(--table-background);
+            background-image: url("../../../../assets/images/tabel-gradient.png");
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            &__reveal {
+                text-align: center;
+                height: 38px;
+            }
+        }
+
+
+        .default-card {
+            width: 70px;
+            height: 116px;
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+
+            .card {
+                width: 100%;
+                height: 100%;
+                background-color: var(--main-stroke);
+                border-radius: 8px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                &:not(.voted) {
+                    img, .score {
+                        display: none;
+                    }
+                }
+
+                &.voted {
+                    background-color: var(--main-blue);
+
+                    img {
+                        display: block;
+                        color: var(--white);
+                    }
+
+                    span {
+                        display: none;
+                    }
+                }
+            }
+
+            .text {
+                text-align: center;
+            }
+        }
+
+        .score-cards {
+            position: absolute;
+            bottom: -300px;
+        }
+    }
+
+}

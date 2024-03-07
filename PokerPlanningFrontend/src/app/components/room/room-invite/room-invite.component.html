@@ -1,0 +1,22 @@
+<div class="container">
+    <h3>Invite Players</h3>
+    <mat-dialog-content class="content">
+        <form [formGroup]="linkForm" class="form">
+            <mat-form-field>
+                <mat-label>Game Url</mat-label>
+                <input matInput type="text" formControlName="link" readonly="">
+            </mat-form-field>
+            <button class="button" mat-flat-button (click)="onCopyLink()">
+                <span class="text">
+                    Copy Link
+                </span>
+            </button>
+        </form>
+        <div class="close" (click)="onClose()">
+            <mat-icon>
+                close
+            </mat-icon>
+        </div>
+    
+    </mat-dialog-content>
+</div>

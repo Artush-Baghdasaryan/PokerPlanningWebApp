@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.CodeAnalysis.Elfie.Serialization;
 using PokerPlanningWebApi.Intefaces;
 using PokerPlanningWebApi.Models;
@@ -12,11 +13,16 @@ public class RoomController : ControllerBase
 {
     private readonly IRoomService _roomService;
     private readonly IGuestService _guestService;
+    private readonly IHubContext<RoomHub> _hubContext;
 
-    public RoomController(IRoomService roomService, IGuestService guestService)
+    public RoomController(
+        IRoomService roomService,
+        IGuestService guestService,
+        IHubContext<RoomHub> hubContext)
     {
         _roomService = roomService;
         _guestService = guestService;
+        _hubContext = hubContext;
     }
 
     [HttpGet("get-all")]
@@ -46,14 +52,28 @@ public class RoomController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-
-    [HttpPost("create-new-room")]
-    public async Task<ActionResult<string>> CreateRoom([FromQuery] string adminId, [FromQuery] string roomName)
+    
+    [HttpGet("get-guests/{roomId}")]
+    public async Task<ActionResult<List<Guest>?>> GetGuests(string roomId)
     {
         try
         {
-            var roomId = await _roomService.CreateRoom(adminId, roomName);
-            return Ok(roomId);
+            var guests = await _roomService.GetGuests(roomId);
+            return Ok(guests);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost("create-new-room")]
+    public async Task<ActionResult<Room>> CreateRoom([FromQuery] string roomName)
+    {
+        try
+        {
+            var room = await _roomService.CreateRoom(roomName);
+            return Ok(room);
         }
         catch (Exception ex)
         {
@@ -76,12 +96,17 @@ public class RoomController : ControllerBase
     }
 
     [HttpPost("add-guest/{roomId}")]
-    public async Task<ActionResult> AddGuest(string roomId, [FromQuery]string guestId)
+    public async Task<ActionResult<Guest>> AddGuestToRoom(string roomId)
     {
         try
         {
-            await _roomService.AddGuest(roomId, guestId);
-            return Ok();
+            var guest = await _roomService.AddGuest(roomId);
+            var room = await _roomService.GetById(roomId);
+            /*var guestsIds = room.Guests.Where(g => g.Id != guest.Id).Select(g => g.Id);
+            await _hubContext.Clients
+                .All
+                .SendAsync("GuestJoined", guest);*/
+            return Ok(guest);
         }
         catch (Exception ex)
         {

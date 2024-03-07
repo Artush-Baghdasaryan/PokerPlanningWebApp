@@ -1,0 +1,19 @@
+@import "../variables/colors";
+
+.mdc-button.mdc-button {
+    align-items: center;
+    --mdc-filled-button-container-color: var(--main-blue);
+    --mdc-filled-button-label-text-color: var(--white);
+    --mdc-filled-button-container-shape: 8px;
+
+    &.outline {
+        --mdc-filled-button-container-color: var(--white);
+        --mdc-filled-button-label-text-color: var(--main-blue);
+        border: 1px solid var(--main-blue);
+        transition: all 0.3s ease;
+        &:hover {
+            --mdc-filled-button-container-color: var(--main-blue);
+            --mdc-filled-button-label-text-color: var(--white);
+        }
+    }
+}

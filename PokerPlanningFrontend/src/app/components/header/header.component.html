@@ -1,0 +1,44 @@
+<div class="container">
+    <div class="logo">
+        <div class="logo__img">
+            <img src="../../../assets/images/logo.svg" alt="">
+        </div>
+        <div class="logo__name">
+            <div class="logo__name__default" *ngIf="!roomName">
+                <h1 class="heading">Poker</h1>
+                <span class="subheading text">Planning</span>
+            </div>
+            <div class="logo__name__room-name" *ngIf="roomName">
+                <h2>{{roomName}}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="actions" *ngIf="isGuestCreated()">
+        <div #menuOpenBtn
+        class="actions__guest"
+        [matMenuTriggerFor]="menu"
+        (onMenuOpen)="menuTrigger(true)"
+        (onMenuClose)="menuTrigger(false)">
+            <p class="actions__guest__name text">{{guestName}}</p>
+            
+            <mat-icon class="actions__guest__icon" *ngIf="!isMenuOpened">
+                expand_more
+            </mat-icon>
+            <mat-icon class="actions__guest__icon actions__guest__icon--active" *ngIf="isMenuOpened">
+                expand_less
+            </mat-icon>
+        </div>
+        <mat-menu #menu="matMenu" xPosition="before">
+            <button mat-menu-item (click)="onExit()">Exit</button>
+        </mat-menu>
+        <button class="actions__invite outline" mat-flat-button (click)="onInviteTeam()">
+            <!-- <span mat-icon class="material-symbols-outlined">
+                groups
+            </span> -->
+            <mat-icon class="icon">
+                groups
+            </mat-icon>
+            <span class="text">Invite Team</span>
+        </button>
+    </div>
+</div>

@@ -45,13 +45,13 @@ public class GuestController : ControllerBase
         }
     }
     
-    [HttpPost]
-    public async Task<ActionResult<string>> CraeteGuest([FromQuery]string? roomId)
+    [HttpPost("create-guest")]
+    public async Task<ActionResult<Guest>> CraeteGuest([FromQuery]int index)
     {
         try
         {
-            var guestId = await _guestService.CreateGuest(roomId);
-            return Ok(guestId);
+            var guest = await _guestService.CreateGuest(index);
+            return Ok(guest);
         }
         catch (Exception ex)
         {
@@ -74,7 +74,7 @@ public class GuestController : ControllerBase
     }
 
     [HttpPost("score/{guestId}")]
-    public async Task<ActionResult> UpdateScore(string guestId, int score)
+    public async Task<ActionResult> UpdateScore(string guestId, [FromQuery] int score)
     {
         try
         {

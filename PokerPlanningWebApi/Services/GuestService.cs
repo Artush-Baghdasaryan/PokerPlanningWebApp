@@ -9,14 +9,10 @@ namespace PokerPlanningWebApi.Services;
 public class GuestService : IGuestService
 {
     private readonly GuestRepository _guestRepository;
-    private readonly RoomRepository _roomRepository;
-    private readonly IRoomService _roomService;
 
-    public GuestService(GuestRepository guestRepository, RoomRepository roomRepository, IRoomService roomService)
+    public GuestService(GuestRepository guestRepository)
     {
         _guestRepository = guestRepository;
-        _roomRepository = roomRepository;
-        _roomService = roomService;
     }
 
     public async Task<List<Guest>> GetAll()
@@ -32,38 +28,17 @@ public class GuestService : IGuestService
         return guest;
     }
 
-    public async Task<string> CreateGuest(string? roomId)
+    public async Task<Guest> CreateGuest(int index, string? connectionId = null)
     {
-        if (roomId == null)
-        {
-            var adminId = await CreateAdmin();
-            return adminId;
-        } 
-        
-        var room = await _roomRepository.GetById(roomId);
-        if (room == null) throw new Exception("Room was not found!");
-        var index = room.Guests!.Count + 1; // +1 for new index of guest
         var guest = new Guest
         {
             Id = ObjectId.GenerateNewId().ToString(),
-            Score = 0,
-            Index = index
+            Score = null,
+            Index = index,
+            ConnectionId = connectionId
         };
         await _guestRepository.AddEntity(guest);
-        await _roomService.AddGuest(roomId, guest.Id);
-        return guest.Id;
-    }
-
-    private async Task<string> CreateAdmin()
-    {
-        var admin = new Guest
-        {
-            Id = ObjectId.GenerateNewId().ToString(),
-            Score = 0,
-            Index = 1
-        };
-        await _guestRepository.AddEntity(admin);
-        return admin.Id;
+        return guest;
     }
 
     public async Task RemoveGuest(string guestId)
@@ -71,14 +46,15 @@ public class GuestService : IGuestService
         await _guestRepository.Delete(guestId);
     }
 
-    public async Task UpdateScore(string guestId, int score)
+    public async Task<Guest> UpdateScore(string guestId, int? score)
     {
         var guest = await _guestRepository.GetById(guestId);
         if (guest == null)
         {
-            return;
+            throw new Exception("Guest was not found");
         }
         guest.Score = score;
         await _guestRepository.UpdateEntity(guestId, guest);
+        return guest;
     }
 }

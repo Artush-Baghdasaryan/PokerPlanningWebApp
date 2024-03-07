@@ -1,0 +1,25 @@
+<div class="container">
+    <div #gameTable class="game-table">
+        <div class="game-table__content">
+            <div class="game-table__content__reveal">
+                <button mat-flat-button [disabled]="false">
+                    <mat-icon>
+                        info
+                    </mat-icon>
+                    <span class="text">Reveal</span>
+                </button>
+            </div>
+        </div>
+        <div class="default-card" *ngFor="let guest of guests" [id]="guest.id">
+            <div class="card">
+                <img src="../../../../assets/images/logo-white.svg">
+            </div>
+            <div class="guest-name text">
+                <span>Guest {{guest.index}}</span>
+            </div>
+        </div>
+        <div class="score-cards">
+            <app-room-score (scoreUpdated)="onGuestVote($event)"></app-room-score>
+        </div>
+    </div>
+</div>

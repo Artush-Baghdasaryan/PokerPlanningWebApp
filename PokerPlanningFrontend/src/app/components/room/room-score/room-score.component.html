@@ -1,0 +1,13 @@
+<div class="container">
+    <h3>Choose Your Estimate...</h3>
+    <div class="cards">
+        <div matRipple class="cards__item" *ngFor="let key of keys"
+        [id]="key"
+        [class.picked]="pickedScoreId === key"
+        (click)="onScore($event)">
+            <span [class.material-symbols-outlined]="key==='coffee'">
+                {{key}}
+            </span>
+        </div>
+    </div>
+</div>

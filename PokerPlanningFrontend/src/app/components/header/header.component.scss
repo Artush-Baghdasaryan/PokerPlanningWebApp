@@ -1,0 +1,59 @@
+@import "../../../scss/variables/";
+
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-inline: 60px;
+    padding-block: 32px;
+    padding: 32px 60px 0 60px;
+    align-items: center;
+
+    .logo {
+        display: flex;
+        gap: 12px;
+        &__name {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            &__default {
+                .heading {
+                    color: var(--main-blue);
+                }
+            }
+        }
+    }
+
+    .actions {
+        display: flex;
+        gap: 16px;
+
+        &__guest {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+
+            &__icon {
+                font-size: 16px;
+                color: var(--light-grey);
+
+                &--active {
+                    color: var(--main-blue);
+                }
+            }
+        }
+
+        &__invite {
+            display: flex;
+            align-items: center;
+            height: 46px;
+            width: 200px;
+
+            .icon {
+                font-size: 16px;
+            }
+        }
+    }
+}
