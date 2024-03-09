@@ -14,7 +14,6 @@ export const authGuard: CanActivateFn = (route, state) => {
     const guestId = guestService.getCurrentGuestId();
     if (guestId === null) {
         const roomId = window.location.href.split('/').reverse()[0];
-        console.log("auth guard", roomId);
         if (!roomId) {
             routerService.redirectToCreateGame();
             return false;

@@ -16,7 +16,6 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<any> {
-    console.log("intercepting!!!");
     let headers = req.headers.set('Content-Type', 'application/json');
     headers = headers.set('Accept', 'text/plain');
 

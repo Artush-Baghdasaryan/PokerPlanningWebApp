@@ -48,7 +48,6 @@ export class RoomService {
     return this.http.delete<void>(`${this.api}/${this.controller}?roomId:${roomId}`).pipe(
       tap({
         next: () => {
-          console.log("room deleted successfully");
           this.cleanRoomData();
         }
       })

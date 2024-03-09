@@ -31,7 +31,6 @@ export class RoomGameComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    console.log("ng on init");
     this.roomId = this.route.snapshot.paramMap.get("id");
     this.getRoom();
 
@@ -46,7 +45,6 @@ export class RoomGameComponent implements OnInit {
     });
 
     this.roomHub.guestVoted.subscribe((guestScore: GuestScore) => {
-      console.log("guest voted");
       this.getGuests().then(() => {
         this.onGuestVote(guestScore);
       });
@@ -57,7 +55,6 @@ export class RoomGameComponent implements OnInit {
     });
 
     this.roomHub.reset.subscribe(() => {
-      console.log("resetting voting###############");
       this.getRoom();
       this.getGuests();
     })
@@ -84,16 +81,13 @@ export class RoomGameComponent implements OnInit {
   }
 
   public renderGuestsCards(): void {
-    console.log("thisGuests!", this.guests);
     this.guests?.forEach(guest => {
       this.renderGuestCard(guest);
     });
 
-    console.log(this.guests);
   }
 
   private renderGuestCard(guest: Guest): void {
-    console.log("table", this.tableElement);
     const card = this.tableElement.querySelector(`[id='${guest.id}']`) as HTMLElement;
     const position = positions[guest.index];
 
@@ -113,7 +107,6 @@ export class RoomGameComponent implements OnInit {
 
   public onGuestVote(guestScore: GuestScore): void {
     const guest = this.guests?.find(g => g.id === guestScore.id);
-    console.log("guest voted", guest);
     if (!guest) return;
 
     const guestCardElem = this.tableElement.querySelector(`[id='${guest.id}'] .card`);
@@ -133,7 +126,6 @@ export class RoomGameComponent implements OnInit {
   }
 
   public async onReveal(score?: number): Promise<void> {
-    console.log("revealed callleeedddddd", score, this.guests);
     const cardsWrappers = this.tableElement.querySelectorAll(".card-wrapper");
     cardsWrappers.forEach(wrapper => {
       const id = wrapper.getAttribute("id");
@@ -159,14 +151,12 @@ export class RoomGameComponent implements OnInit {
 
     const cardElem = this.tableElement.querySelector(`[id='${guestId}'] .card`) as HTMLElement;
     const span = cardElem?.querySelector("span") as HTMLElement;
-    console.log("span", span);
     if (!span) return;
 
     cardElem?.removeChild(span);
   }
 
   public onRevealRequest(): void {
-    console.log("on reveal request");
     if (!this.roomId) return;
     this.roomHub.revealVoting(this.roomId).then(() => {
       this.getRoom();
@@ -178,7 +168,6 @@ export class RoomGameComponent implements OnInit {
   }
 
   public startNewVoting(): void {
-    console.log("start new voting");
     if (!this.roomId) return;
 
     this.roomHub.resetVoting(this.roomId);
