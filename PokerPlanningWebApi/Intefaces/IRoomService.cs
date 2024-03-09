@@ -12,4 +12,6 @@ public interface IRoomService
     Task<Guest> AddGuest(string roomId, string? connectionId = null);
     Task RemoveGuest(string roomId, string guestId);
     Task<int?> Reveal(string roomId);
+    Task ResetVoting(string roomId);
+
 }

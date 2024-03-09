@@ -9,5 +9,5 @@ public interface IRoomHub
     Task GuestQuit(string roomId);
     Task<Guest> GuestVote(string guestId, string roomId, int? score);
     Task Reveal(string roomId);
-    Task VoteReset(string roomId);
+    Task ResetVoting(string roomId);
 }

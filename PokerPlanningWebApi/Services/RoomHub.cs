@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using MongoDB.Driver;
 using PokerPlanningWebApi.Intefaces;
 using PokerPlanningWebApi.Models;
 
@@ -25,40 +26,47 @@ public class RoomHub : Hub, IRoomHub
     public async Task<Guest> AddGuest(string roomId)
     {
         var guest = await _roomService.AddGuest(roomId, Context.ConnectionId);
-        var room = await _roomService.GetById(roomId);
-        var connectionIds = room.Guests?.Select(g => g.ConnectionId);
-        if (connectionIds != null) await Clients.Clients(connectionIds!).SendAsync("GuestsUpdate");
+        await SendMessage(roomId, "GuestsUpdate");
         return guest;
     }
 
     public async Task GuestQuit(string roomId)
     {
-        await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
-        await Clients.Group(roomId).SendAsync("GuestsUpdate", null);
+        var connectionIds = await GuestsConnectionIds(roomId);
+        if (connectionIds != null) await Clients.Clients(connectionIds!).SendAsync("GuestsUpdate");
     }
 
     public async Task<Guest> GuestVote(string guestId, string roomId, int? score)
     {
         var guest = await _guestService.UpdateScore(guestId, score);
-        var connectionIds = await GuestsConnectionIds(roomId, guest.ConnectionId);
-        if (connectionIds != null) await Clients.Clients(connectionIds!).SendAsync("GuestVote", guest);
+        await SendMessage(roomId, "GuestVote", guest);
         return guest;
     }
 
     public async Task Reveal(string roomId)
     {
-        await Clients.Group(roomId).SendAsync("Reveal");
+        var score = await _roomService.Reveal(roomId);
+        await SendMessage(roomId, "Reveal", score);
     }
 
-    public async Task VoteReset(string roomId)
+    public async Task ResetVoting(string roomId)
     {
-        await Clients.Group(roomId).SendAsync("VoteReset");
+        await _roomService.ResetVoting(roomId);
+        await SendMessage(roomId, "ResetVoting");
     }
 
-    private async Task<IEnumerable<string?>?> GuestsConnectionIds(string roomId, string? exceptConnectionId)
+    private async Task<IEnumerable<string?>?> GuestsConnectionIds(string roomId, string? exceptConnectionId = null)
     {
-        var room = await _roomService.GetById(roomId);
-        var connectionIds = room.Guests?.Select(g => g.ConnectionId).Where(c => c != exceptConnectionId);
+        var guests = await _roomService.GetGuests(roomId);
+        var connectionIds = guests.Select(g => g.ConnectionId).Where(c => c != exceptConnectionId);
         return connectionIds;
+    }
+
+    private async Task SendMessage(string roomId, string command, params Object[] messages)
+    {
+        var guests = await _roomService.GetGuests(roomId);
+        var connectionIds = guests?.Select(g => g.ConnectionId);
+        if (connectionIds == null || !connectionIds!.Any()) return;
+        await Clients.Clients(connectionIds!).SendAsync(command, messages);
     }
 }

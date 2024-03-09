@@ -36,7 +36,7 @@ export class GuestService {
     );
   }
 
-  public updateScore(guestId: string, score: number): Observable<void> {
+  public updateScore(guestId: string, score: number | null): Observable<void> {
     return this.httpClient.post<void>(`${this.api}/${this.controller}/score/${guestId}?score=${score}`, null).pipe();
   }
 

@@ -39,7 +39,12 @@ public class RoomService : IRoomService
         var room = await _roomRepository.GetById(roomId);
         if (room == null) throw new Exception("Room was not found");
 
-        return room.Guests;
+        var guests = new List<Guest>();
+        foreach (var guestId in room.GuestsIds)
+        {
+            guests.Add(await _guestService.GetById(guestId));
+        }
+        return guests;
     }
 
     public async Task<Room> CreateRoom(string roomName)
@@ -49,7 +54,8 @@ public class RoomService : IRoomService
             Id = ObjectId.GenerateNewId().ToString(),
             Name = roomName,
             Admin = null,
-            Guests = new List<Guest>()
+            RevealScore = null,
+            GuestsIds = new List<string>()
         };
         await _roomRepository.AddEntity(room);
         return room;
@@ -70,7 +76,7 @@ public class RoomService : IRoomService
         var room = await _roomRepository.GetById(roomId);
         if (room == null) throw new Exception("Something went wrong, try again");
 
-        var indexes = room.Guests?.Select(g => g.Index);
+        var indexes = (await GetGuests(roomId)).Select(g => g.Index);
         var allowedIndexes = Enumerable.Range(1, 8).Where(i => indexes != null && !indexes.Contains(i));
         var rnd = new Random();
         var newIndex = allowedIndexes.ToList()[rnd.Next(1, allowedIndexes.Count())];
@@ -107,8 +113,25 @@ public class RoomService : IRoomService
         var room = await _roomRepository.GetById(roomId);
         if (room == null) throw new Exception("Room was not found");
 
-        var revealScore = room.Guests?.Sum(guest => guest.Score);
+        
+        var revealScore = (await GetGuests(roomId)).Sum(g => g.Score);
+        room.RevealScore = revealScore;
+        await _roomRepository.UpdateEntity(roomId, room);
+
         return revealScore;
+    }
+
+    public async Task ResetVoting(string roomId)
+    {
+        var room = await _roomRepository.GetById(roomId);
+        if (room == null) throw new Exception("Room was not found");
+
+        room.RevealScore = null;
+        await _roomRepository.UpdateEntity(roomId, room);
+        foreach (var guestId in room.GuestsIds)
+        {
+            await _guestService.UpdateScore(guestId, null);
+        }
     }
 }
 

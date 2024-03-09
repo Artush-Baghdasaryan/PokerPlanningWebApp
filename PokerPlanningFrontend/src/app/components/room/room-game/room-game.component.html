@@ -2,15 +2,25 @@
     <div #gameTable class="game-table">
         <div class="game-table__content">
             <div class="game-table__content__reveal">
-                <button mat-flat-button [disabled]="false">
-                    <mat-icon>
-                        info
-                    </mat-icon>
-                    <span class="text">Reveal</span>
-                </button>
+                <div class="reveal-button-wrapper" *ngIf="!room?.revealScore">
+                    <button mat-flat-button [disabled]="cantReveal()" (click)="onRevealRequest()">      
+                        <mat-icon>
+                            info
+                        </mat-icon>
+                        <span class="text">Reveal</span>
+                    </button>
+                </div>
+                <div class="reveal-score-wrapper" *ngIf="room?.revealScore">
+                    <h2 class="score">{{room?.revealScore}}</h2>
+                    <p class="text">Average</p>
+
+                    <button class="start-new" mat-flat-button (click)="startNewVoting()">
+                        <span class="text">Start new Voting</span>
+                    </button>
+                </div>
             </div>
         </div>
-        <div class="default-card" *ngFor="let guest of guests" [id]="guest.id">
+        <div class="card-wrapper" *ngFor="let guest of guests" [id]="guest.id">
             <div class="card">
                 <img src="../../../../assets/images/logo-white.svg">
             </div>

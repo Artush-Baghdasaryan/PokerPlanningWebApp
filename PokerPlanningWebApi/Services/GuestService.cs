@@ -57,4 +57,5 @@ public class GuestService : IGuestService
         await _guestRepository.UpdateEntity(guestId, guest);
         return guest;
     }
+    
 }

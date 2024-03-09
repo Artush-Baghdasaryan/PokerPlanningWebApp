@@ -29,15 +29,40 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
 
             &__reveal {
-                text-align: center;
-                height: 38px;
+
+                .reveal-button-wrapper {
+                    display: flex;
+                    text-align: center;
+                    justify-content: center;
+                }
+
+                .reveal-score-wrapper {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 12px;
+
+                    .score {
+                        font-size: 32px;
+                        color: var(--main-blue);
+                    }
+
+
+                    .start-new {
+                        position: absolute;
+                        bottom: 8px;
+                    }
+                }
+                
             }
         }
 
 
-        .default-card {
+        .card-wrapper {
             width: 70px;
             height: 116px;
             position: absolute;
@@ -53,6 +78,7 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                color: var(--white);
 
                 &:not(.voted) {
                     img, .score {
@@ -67,8 +93,12 @@
                         display: block;
                         color: var(--white);
                     }
+                }
 
-                    span {
+                &.reveal {
+                    background-color: var(--main-blue);
+
+                    img {
                         display: none;
                     }
                 }

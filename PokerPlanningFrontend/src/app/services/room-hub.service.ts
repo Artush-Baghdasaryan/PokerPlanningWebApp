@@ -32,7 +32,7 @@ export class RoomHubService {
   }
 
   public addListeners(): void {
-    this.hubConnection.on(HubEvents.GuestsUpdate, (guest) => {
+    this.hubConnection.on(HubEvents.GuestsUpdate, () => {
       this.guestsUpdated.next();
     });
 
@@ -47,7 +47,7 @@ export class RoomHubService {
       this.reveal.next(score);
     });
 
-    this.hubConnection.on(HubEvents.VoteReset, () => {
+    this.hubConnection.on(HubEvents.ResetVoting, () => {
       this.reset.next();
     })
   }
@@ -56,9 +56,22 @@ export class RoomHubService {
     return await this.hubConnection.invoke(HubCommand.AddGuest, roomId);
   }
 
-  public async guestVote(guestId: string, roomId: string, score: number): Promise<Guest> {
+  public async guestVote(guestId: string, roomId: string, score: number | null): Promise<Guest> {
     return await this.hubConnection.invoke(HubCommand.GuestVote, guestId, roomId, score);
-  } 
+  }
+
+  public async revealVoting(roomId: string): Promise<void> {
+    this.hubConnection.invoke(HubCommand.Reveal, roomId);
+  }
+
+  public resetVoting(roomId: string): void {
+    this.hubConnection.invoke(HubCommand.ResetVoting, roomId);
+  }
+
+  public guestQuit(roomId: string): void {
+    this.hubConnection.invoke(HubCommand.GuestQuit, roomId);
+    this.hubConnection.stop();
+  }
 
   public stopConnection(): void {
     this.hubConnection.stop();

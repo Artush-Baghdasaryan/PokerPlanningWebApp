@@ -15,7 +15,7 @@ export class RoomScoreComponent {
   @Output() public scoreUpdated = new EventEmitter<GuestScore>();
 
   public pickedScoreId: string | null = null
-  public scoreCards: Record<string, number> = {
+  public scoreCards: Record<string, number | null> = {
     "0": 0,
     "1": 1,
     "2": 2,
@@ -51,8 +51,7 @@ export class RoomScoreComponent {
     const score = this.scoreCards[this.pickedScoreId!];
     const roomId = this.roomService.getRoomId();
 
-    this.guestService.updateScore(guestId, score).subscribe(() => {
-      this.roomHub.guestVote(guestId, roomId!, score);
+    this.roomHub.guestVote(guestId, roomId!, score).then((guest) => {
       this.scoreUpdated.emit({
         id: guestId,
         score: score

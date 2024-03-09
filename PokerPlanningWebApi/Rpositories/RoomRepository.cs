@@ -17,13 +17,15 @@ public class RoomRepository : BaseRepository<Room>
     
     public async Task AddGuestToRoom(Room room, Guest guest)
     {
-        room.Guests!.Add(guest);
+        room.GuestsIds ??= new List<string>();
+        room.GuestsIds.Add(guest.Id!);
         await UpdateEntity(room.Id!, room);
     }
     
     public async Task RemoveGuestFromRoom(Room room, Guest guest)
     {
-        room.Guests!.Remove(guest);
+        if (room.GuestsIds == null) return;
+        room.GuestsIds!.Remove(guest.Id!);
         await UpdateEntity(room.Id!, room);
     }
 }
